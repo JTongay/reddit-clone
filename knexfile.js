@@ -3,7 +3,7 @@
 module.exports = {
 
   development: {
-    client: 'pq',
+    client: 'pg',
     connection: {
       host: '127.0.0.1',
       database: 'reddit-clone-dev',

@@ -8,5 +8,13 @@
 </head>
 <body>
   <h1>This is the Users Page</h1>
+  <!-- <% var deez = JSON.parse(users) %>
+  <% deez.forEach(function(user){ %>
+    <h2><%=user %></h2>
+
+  <%  }) %> -->
+  <% for(var i = 0; i < users.length; i++){ %>
+    <h2><%=users[i].username %></h2>
+  <% } %>
 </body>
 </html>

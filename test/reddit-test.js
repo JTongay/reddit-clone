@@ -58,7 +58,7 @@ describe('/users', function () {
   })
 })
 
-describe('/users/id', function () {
+describe('/users/:id', function () {
   before(function (done) {
     knex('users').insert({username: 'poop'}).then(function (err) {
       //
@@ -80,16 +80,29 @@ describe('/users/id', function () {
       }
       knex.select('username').from('users').then(function (data) {
         console.log(data[0].username);
-        expect(data[0].username).to.equal('poop')
+        expect(data[0].username).to.equal('poop');
+        expect(res.text).to.contain("This is a single users page")
         done()
       })
     })
   })
 })
 
-describe('/users/id/posts', function () {
+describe('/users/:id/posts', function () {
+  before(function (done) {
+    knex('users').insert({username: 'poop'}).then(function (err) {
+      //
+      done();
+    })
+  })
+  after(function (done) {
+    knex('users').truncate().then(function (err) {
+      //
+      done();
+    })
+  })
   it('should show one particular users posts', function (done) {
-    request.get('/users/:id/posts')
+    request.get('/users/0/posts')
     .expect(200)
     .end(function (err, res) {
       if (err) {
@@ -100,9 +113,9 @@ describe('/users/id/posts', function () {
   })
 })
 
-describe('/users/id/comments', function () {
+describe('/users/:id/comments', function () {
   it('should show one particular users comments', function (done) {
-    request.get('/users/:id/comments')
+    request.get('/users/0/comments')
     .expect(200)
     .end(function (err, res) {
       if (err) {
@@ -152,7 +165,7 @@ describe('/posts', function () {
  })
 })
 
-describe('/posts/id', function () {
+describe('/posts/:id', function () {
  it('should show particular post', function (done) {
    request.get('/posts/:id')
     .expect(200)
@@ -165,7 +178,7 @@ describe('/posts/id', function () {
  })
 })
 
-describe('/posts/id/comments', function () {
+describe('/posts/:id/comments', function () {
  it('should show particular posts comments', function (done) {
    request.get('/posts/:id/comments')
     .expect(200)
