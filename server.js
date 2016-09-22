@@ -1,3 +1,5 @@
+'use strict'
+
 const express = require('express');
 const app = express();
 
@@ -15,6 +17,23 @@ app.use(bodyParser.json());
 
 app.get('/', function (req, res) {
   res.send('booyah');
+})
+
+app.get('/users', function (req, res) {
+    res.render('users/users');
+})
+
+app.post('/users/new', function (req, res) {
+  res.redirect('/users')
+})
+
+app.get('/users/:id', function (req, res) {
+  var userID = req.params.id;
+  res.render('users/single-user', {username: userID})
+})
+
+app.get('/thank-you', function (req, res) {
+  res.send("deez nutz")
 })
 
 app.listen(port, function() {

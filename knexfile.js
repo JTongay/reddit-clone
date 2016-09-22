@@ -6,7 +6,7 @@ module.exports = {
     client: 'pq',
     connection: {
       host: '127.0.0.1',
-      database: 'reddit-clone-dev'
+      database: 'reddit-clone-dev',
     }
   },
 
@@ -14,7 +14,7 @@ module.exports = {
     client: 'pg',
     connection: {
       host: '127.0.0.1',
-      database: 'reddit-clone-test'
+      database: 'reddit-clone-test',
     }
   },
 
