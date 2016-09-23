@@ -7,8 +7,7 @@
 </head>
 <body>
   <h1>This is the Users Page</h1>
-  <% var deez = JSON.parse(users) %>
-  <% deez.forEach(function(user){ %>
+  <% users.forEach(function(user){ %>
     <h2><%=user.username %></h2>
 
   <%  }) %>
