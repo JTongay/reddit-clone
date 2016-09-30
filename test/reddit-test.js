@@ -63,7 +63,8 @@ describe( '/users', function () {
 describe( '/users/:id', function () {
     before( function ( done ) {
         knex( 'users' ).insert( {
-            username: 'poop'
+            username: 'poop',
+            id: 1
         } ).then( function ( err ) {
             //
             done();
@@ -76,26 +77,27 @@ describe( '/users/:id', function () {
         } )
     } )
     it( 'should show one particular user', function ( done ) {
-        request.get( '/users/0' )
-            .expect( 200, done )
+        request.get( '/users/1' )
+            .expect( 200 )
             .end( function ( err, res ) {
                 if ( err ) {
                     return done( err )
                 }
                 knex.select( 'username' ).from( 'users' ).then( function ( data ) {
-                    console.log( data[ 0 ].username );
                     expect( data[ 0 ].username ).to.equal( 'poop' );
-                    expect( res.text ).to.contain( "This is a single users page" )
+                    expect( res.text ).to.contain( "This is a single users page")
+                    expect(true).to.equal(true);
                     done()
                 } )
             } )
     } )
 } )
 
-describe.only( '/users/:id/posts', function () {
+describe( '/users/:id/posts', function () {
     before( function ( done ) {
         knex( 'users' ).insert( {
-            username: 'poop'
+            username: 'poop',
+            id: 2
         } ).then( function ( err ) {
             //
             done()
@@ -108,7 +110,7 @@ describe.only( '/users/:id/posts', function () {
         } )
     } )
     it( 'should show one particular users posts', function ( done ) {
-        request.get( '/users/0/posts' )
+        request.get( '/users/2/posts' )
             .expect( 200 )
             .send( knex( 'posts' ).insert( {
                 title: 'stuff',

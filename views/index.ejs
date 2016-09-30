@@ -9,7 +9,8 @@
   <h1>This is the Users Page</h1>
   <% users.forEach(function(user){ %>
     <h2><%=user.username %></h2>
-
+    <a href="/users/<%= user.id %>">See more info</a>
+    <h2><%=user.id %></h2>
   <%  }) %>
 </body>
 </html>

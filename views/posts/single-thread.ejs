@@ -4,14 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Document</title>
+  <title>Single Thread</title>
 </head>
 <body>
-  <h1>Here are the threads</h1>
+  <h1>Here is the single thread</h1>
   <% posts.forEach(function (post){ %>
   <h3>Title: <%=post.title %></h3>
   <h3>Body: <%=post.body %></h3>
   <% }) %>
-
+  <a href="/users/<%=userID %>/posts/new">Add a new Post</a>
 </body>
 </html>
