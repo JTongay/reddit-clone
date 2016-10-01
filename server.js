@@ -73,8 +73,9 @@ app.get('/users/:id/comments', function (req, res) {
 })
 
 app.get('/posts', function (req, res) {
-  knex('posts').then(function (posts){
-    res.render('posts/threads', {posts: posts});
+  knex.from('users').innerJoin('posts', 'users.id', 'posts.user_id').then(function (posts){
+    console.log(posts);
+      res.render('posts/threads', {posts: posts});
   })
 })
 
@@ -85,7 +86,11 @@ app.get('/posts/:id', function (req, res) {
 
 app.get('/posts/:id/comments', function (req, res) {
   var userID = req.params.id;
-  res.render('comments/all-comments');
+  knex('comments').then(function (comments){
+
+    res.render('comments/all-comments', {comments: comments, userID: userID});
+
+  })
 })
 
 app.get('/posts/:id/comments/new', function (req, res) {

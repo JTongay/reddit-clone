@@ -8,9 +8,9 @@
 </head>
 <body>
   <h1>Here are the threads</h1>
+    <ul>
   <% posts.forEach(function (post){ %>
-  <h3>Title: <%=post.title %></h3>
-  <h3>Body: <%=post.body %></h3>
+      <li><a href="/posts/<%=post.id %>/comments"><%=post.title %></a> - <%=post.username %></li>
   <% }) %>
 
 </body>
