@@ -74,7 +74,7 @@ app.get('/users/:id/comments', function (req, res) {
 
 app.get('/posts', function (req, res) {
   knex.from('users').innerJoin('posts', 'users.id', 'posts.user_id').then(function (posts){
-    console.log(posts);
+    // console.log(posts);
       res.render('posts/threads', {posts: posts});
   })
 })
@@ -86,17 +86,17 @@ app.get('/posts/:id', function (req, res) {
 
 app.get('/posts/:id/comments', function (req, res) {
   var userID = req.params.id;
-  knex('comments').then(function (comments){
-
+  knex.from('users').innerJoin('posts', 'users.id', 'posts.user_id').then(function (comments){
+    console.log(comments);
     res.render('comments/all-comments', {comments: comments, userID: userID});
-
   })
+
 })
 
-app.get('/posts/:id/comments/new', function (req, res) {
-  var userID = req.params.id;
-  res.render('comments/all-comments');
-})
+// app.get('/posts/:id/comments/new', function (req, res) {
+//   var userID = req.params.id;
+//   res.render('comments/all-comments');
+// })
 
 app.get('/thank-you', function (req, res) {
   res.send("deez nutz")
