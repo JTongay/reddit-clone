@@ -29,227 +29,75 @@ describe( "Landing Page", function () {
     } )
 } )
 
-describe( '/users', function () {
-    before( function ( done ) {
-        knex( 'users' ).insert( {
-            username: 'joey'
-        } ).then( function ( err ) {
-            //
+describe('Users', function () {
+ it('Should show all of the users', function (done) {
+   request.get('/users')
+          .expect(200)
+          .end(function(err, res) {
+            if(err){
+              done(err)
+            }
+            knex('users').then(function (data) {
+              expect(res.text).to.contain(data[0].username);
+              expect(res.text).to.contain(data[1].username);
+              done();
+            })
+          })
+  })
+  it('Should show the register new user page', function (done) {
+    request.get('/users/new')
+           .expect(200)
+           .end(function(err, res) {
+             if(err){
+               done(err)
+             }
+            expect(res.text).to.contain("Register for reddit")
             done();
-        } )
-    } )
-    after( function ( done ) {
-        knex.raw( 'TRUNCATE TABLE users CASCADE' ).then( function ( err ) {
-            //
+           })
+   })
+  it('Should show a specific user', function (done) {
+    request.get('/users/1')
+           .expect(200)
+           .end(function(err, res) {
+             if(err){
+               done(err)
+             }
+             knex('users').where('id', 1).first().then(function (data) {
+               expect(res.text).to.contain(data.username);
+              //  expect(res.text).to.contain();
+               done();
+             })
+           })
+   })
+ })
+describe('POST user', function () {
+  after(function (done) {
+    knex('users').where('username', 'Pepsi_is_better').del().then(function (data) {
+
+      done();
+    });
+  })
+   it('POST Should post a new user and redirect the user back to the users page', function (done) {
+     request.post('/users')
+     .send({
+       username: 'Pepsi_is_better',
+       first_name: 'What',
+       last_name: 'Did i do?',
+       email: 'pepsi.hello@gmail.com'
+     })
+     .end(function(err, res) {
+       if(err){
+         done(err)
+       }
+       request.get('/users')
+          .expect(200)
+          .end(function(err, res) {
+            if(err){
+              done(err);
+            }
+            expect(res.text).to.include('Pepsi_is_better');
             done();
-        } )
-    } )
-    it( 'should show the users page and display a username', function ( done ) {
-        request.get( '/users' )
-            .expect( 200 )
-            .end( function ( err, res ) {
-                if ( err ) {
-                    return done( err );
-                }
-                knex.select( 'username' ).from( 'users' ).then( function ( data ) {
-                    console.log( data[ 0 ].username );
-                    expect( data[ 0 ].username ).to.equal( 'joey' )
-                    done()
-                } )
-            } )
-    } )
-} )
-
-describe( '/users/:id', function () {
-    before( function ( done ) {
-        knex( 'users' ).insert( {
-            username: 'poop',
-            id: 1
-        } ).then( function ( err ) {
-            //
-            done();
-        } )
-    } )
-    after( function ( done ) {
-        knex.raw( 'TRUNCATE TABLE users CASCADE' ).then( function ( err ) {
-            //
-            done();
-        } )
-    } )
-    it( 'should show one particular user', function ( done ) {
-        request.get( '/users/1' )
-            .expect( 200 )
-            .end( function ( err, res ) {
-                if ( err ) {
-                    return done( err )
-                }
-                knex.select( 'username' ).from( 'users' ).then( function ( data ) {
-                    expect( data[ 0 ].username ).to.equal( 'poop' );
-                    expect( res.text ).to.contain( "This is a single users page")
-                    expect(true).to.equal(true);
-                    done()
-                } )
-            } )
-    } )
-} )
-
-describe( '/users/:id/posts', function () {
-    before( function ( done ) {
-        knex( 'users' ).insert( {
-            username: 'poop',
-            id: 2
-        } ).then( function ( err ) {
-            //
-            done()
-        } );
-    } )
-    after( function ( done ) {
-        knex.raw( 'TRUNCATE TABLE users CASCADE' ).then( function ( err ) {
-            //
-            done();
-        } )
-    } )
-    it( 'should show one particular users posts', function ( done ) {
-        request.get( '/users/2/posts' )
-            .expect( 200 )
-            .send( knex( 'posts' ).insert( {
-                title: 'stuff',
-                body: 'i did things',
-                user_id: knex.select( 'id' ).from( 'users' ).where( 'username', 'poop' )
-            } ).then( function ( data ) {} ) )
-            .end( function ( err, res ) {
-                if ( err ) {
-                    return done( err )
-                }
-                knex( 'posts' ).then( function ( data ) {
-                    expect( res.text ).to.contain( 'stuff' );
-                    expect( res.text ).to.contain( 'i did things' );
-                    done();
-                } )
-            } )
-    } )
-} )
-
-describe( '/users/:id/comments', function () {
-    it( 'should show one particular users comments', function ( done ) {
-        request.get( '/users/0/comments' )
-            .expect( 200 )
-            .end( function ( err, res ) {
-                if ( err ) {
-                    return done( err )
-                }
-                expect( res.text ).to.contain( 'This is a single users comments page' )
-                done()
-            } )
-    } )
-} )
-
-
-// --------------POST NEW USER-----------------------
-describe( '/users/new', function () {
-    before( function ( done ) {
-        knex( 'users' ).insert( {
-            username: 'booyah'
-        } ).then( function ( err ) {
-            //
-            done();
-        } );
-    } )
-    after( function ( done ) {
-        knex.raw( 'TRUNCATE TABLE users CASCADE' ).then( function ( err ) {
-            //
-            done();
-        } );
-    } )
-    it( 'should add a new user and redirect you to the users page', function ( done ) {
-        request.get( '/users/new' )
-            .expect( 200 )
-            .end( function ( err, res ) {
-                if ( err ) {
-                    return done( err );
-                }
-                request.post( '/users' )
-                    .expect( 302, done )
-                knex.select( 'username' ).from( 'users' ).then( function ( data ) {
-                    expect( data[ 0 ].username ).to.equal( 'booyah', done )
-                } )
-            } )
-    } )
-} )
-
-// --------------------------------------------------
-
-describe( '/posts', function () {
-    it( 'should show all of the posts', function ( done ) {
-        request.get( '/posts' )
-            .expect( 200 )
-            .end( function ( err, res ) {
-                if ( err ) {
-                    return done( err )
-                }
-                done()
-            } )
-    } )
-} )
-
-describe( '/posts/:id', function () {
-    it( 'should show particular post', function ( done ) {
-        request.get( '/posts/:id' )
-            .expect( 200 )
-            .end( function ( err, res ) {
-                if ( err ) {
-                    return done( err )
-                }
-                done()
-            } )
-    } )
-} )
-
-describe( '/posts/:id/comments', function () {
-    it( 'should show particular posts comments', function ( done ) {
-        request.get( '/posts/:id/comments' )
-            .expect( 200 )
-            .end( function ( err, res ) {
-                if ( err ) {
-                    return done( err )
-                }
-                done()
-            } )
-    } )
-} )
-
-// POST NEW Post
-// describe('/users/new', function () {
-//  it('should add a new user', function (done) {
-//    request.post('/users/')
-//     .expect(304)
-//     .end(function (err, res) {
-//       if(err) {
-//         return done(err)
-//       }
-//       knex('users').insert({username: 'booyah'}).then(function(err){
-//         //
-//       });
-//       expect(res.text).to.contain('booyah');
-//       done()
-//     })
-//  })
-// })
-
-// POST NEW Comment
-// describe('/users/new', function () {
-//  it('should add a new user', function (done) {
-//    request.post('/users/new')
-//     .expect(304)
-//     .end(function (err, res) {
-//       if(err) {
-//         return done(err)
-//       }
-//       knex('users').insert({username: 'booyah'}).then(function(err){
-//         //
-//       });
-//       expect(res.text).to.contain('booyah');
-//       done()
-//     })
-//  })
-// })
+       })
+     })
+   })
+})
